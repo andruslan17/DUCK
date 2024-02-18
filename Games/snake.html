@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snake</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  #gameCanvas {
+    border: 1px solid black;
+    margin: 0 auto;
+  }
+  #endGameMessage {
+    display: none;
+    margin-top: 20px;
+  }
+  #restartButton {
+    display: none;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>
+</head>
+<body>
+  <h1 id="title">Snake</h1>
+  <div>
+    <label for="difficulty" id="difficultyLabel">Select Difficulty:</label>
+    <select id="difficulty">
+      <option value="easy" data-en="Easy" data-ru="Простой" data-zh="简单" data-ar="سهل">Easy</option>
+      <option value="medium" data-en="Medium" data-ru="Средний" data-zh="中等" data-ar="متوسط">Medium</option>
+      <option value="hard" data-en="Hard" data-ru="Сложный" data-zh="困难" data-ar="صعب">Hard</option>
+    </select>
+  </div>
+  <div>
+    <label for="language" id="languageLabel">Select Language:</label>
+    <select id="language">
+      <option value="en">English</option>
+      <option value="ru">Русский</option>
+      <option value="zh">中文</option>
+      <option value="ar">العربية</option>
+    </select>
+  </div>
+  <canvas id="gameCanvas" width="600" height="600"></canvas>
+  <div id="endGameMessage">Game Over!</div>
+  <button id="restartButton">Restart</button>
+  
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const context = canvas.getContext('2d');
+    const box = 20;
+    let snake = [{x: 200, y: 200}];
+    let food = {x: 0, y: 0};
+    let dx = 0;
+    let dy = 0;
+    let interval = 100;
+    let gameInterval;
+
+    function drawSnake() {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.fillStyle = 'green';
+      snake.forEach(segment => {
+        context.fillRect(segment.x, segment.y, box, box);
+      });
+    }
+
+    function moveSnake() {
+      const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+      snake.unshift(head);
+      if (head.x === food.x && head.y === food.y) {
+        generateFood();
+      } else {
+        snake.pop();
+      }
+    }
+
+    function generateFood() {
+      food.x = Math.floor(Math.random() * (canvas.width / box)) * box;
+      food.y = Math.floor(Math.random() * (canvas.height / box)) * box;
+    }
+
+    function drawFood() {
+      context.fillStyle = 'red';
+      context.fillRect(food.x, food.y, box, box);
+    }
+
+    function checkCollision() {
+      if (
+        snake[0].x < 0 || 
+        snake[0].x >= canvas.width || 
+        snake[0].y < 0 || 
+        snake[0].y >= canvas.height ||
+        snake.slice(1).some(segment => segment.x === snake[0].x && segment.y === snake[0].y)
+      ) {
+        clearInterval(gameInterval);
+        document.getElementById('endGameMessage').style.display = 'block';
+        document.getElementById('restartButton').style.display = 'block';
+      }
+    }
+
+    function resetGame() {
+      snake = [{x: 200, y: 200}];
+      dx = 0;
+      dy = 0;
+      interval = 100;
+      generateFood();
+      document.getElementById('endGameMessage').style.display = 'none';
+      document.getElementById('restartButton').style.display = 'none';
+      gameInterval = setInterval(gameLoop, interval);
+    }
+
+    function gameLoop() {
+      drawSnake();
+      moveSnake();
+      drawFood();
+      checkCollision();
+    }
+
+    generateFood();
+    resetGame();
+
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'ArrowUp' && dy === 0) {
+        dx = 0;
+        dy = -box;
+      } else if (event.key === 'ArrowDown' && dy === 0) {
+        dx = 0;
+        dy = box;
+      } else if (event.key === 'ArrowLeft' && dx === 0) {
+        dx = -box;
+        dy = 0;
+      } else if (event.key === 'ArrowRight' && dx === 0) {
+        dx = box;
+        dy = 0;
+      }
+    });
+
+    document.getElementById('difficulty').addEventListener('change', function(event) {
+      clearInterval(gameInterval);
+      const difficulty = event.target.value;
+      if (difficulty === 'easy') {
+        interval = 150;
+      } else if (difficulty === 'medium') {
+        interval = 100;
+      } else if (difficulty === 'hard') {
+        interval = 50;
+      }
+      resetGame();
+    });
+
+    document.getElementById('language').addEventListener('change', function(event) {
+      const lang = event.target.value;
+      document.getElementById('title').textContent = lang === 'en' ? 'Snake' : (lang === 'ru' ? 'Змейка' : (lang === 'zh' ? '蛇' : 'الثعبان'));
+      document.getElementById('difficultyLabel').textContent = lang === 'en' ? 'Select Difficulty:' : (lang === 'ru' ? 'Выберите сложность:' : (lang === 'zh' ? '选择难度：' : 'اختر الصعوبة:'));
+      document.getElementById('languageLabel').textContent = lang === 'en' ? 'Select Language:' : (lang === 'ru' ? 'Выберите язык:' : (lang === 'zh' ? '选择语言：' : 'اختر اللغة:'));
+      
+      // переводим уровни сложности
+      const difficultyOptions = document.querySelectorAll('#difficulty option');
+      difficultyOptions.forEach(option => {
+        option.textContent = lang === 'en' ? option.dataset.en : (lang === 'ru' ? option.dataset.ru : (lang === 'zh' ? option.dataset.zh : option.dataset.ar));
+      });
+
+      // переводим сообщение о конце игры и текст кнопки
+      document.getElementById('endGameMessage').textContent = lang === 'en' ? 'Game Over!' : (lang === 'ru' ? 'Конец игры!' : (lang === 'zh' ? '游戏结束！' : 'نهاية اللعبة!'));
+      document.getElementById('restartButton').textContent = lang === 'en' ? 'Restart' : (lang === 'ru' ? 'Начать заново' : (lang === 'zh' ? '重新开始' : 'إعادة تشغيل'));
+    });
+
+    document.getElementById('restartButton').addEventListener('click', resetGame);
+  </script>
+</body>
+</html>
