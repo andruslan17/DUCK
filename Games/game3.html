@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Match</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        #gameBoard {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .card {
+            width: calc(20% - 10px);
+            height: 100px;
+            margin: 5px;
+            background-color: #ccc;
+            font-size: 24px;
+            line-height: 100px;
+            cursor: pointer;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Memory Match</h1>
+        <p>Select difficulty level:</p>
+        <select id="difficulty" onchange="createGameBoard()">
+            <option value="20">Level 1 (20 cards)</option>
+            <option value="40">Level 2 (40 cards)</option>
+            <option value="60">Level 3 (60 cards)</option>
+        </select>
+        <div id="gameBoard"></div>
+        <p id="message"></p>
+        <button onclick="resetGame()">Reset</button>
+    </div>
+
+    <script>
+        const levels = {
+            20: ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D', 'E', 'E', 'F', 'F', 'G', 'G', 'H', 'H', 'I', 'I', 'J', 'J'],
+            40: ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D', 'E', 'E', 'F', 'F', 'G', 'G', 'H', 'H', 'I', 'I', 'J', 'J',
+                 'K', 'K', 'L', 'L', 'M', 'M', 'N', 'N', 'O', 'O', 'P', 'P', 'Q', 'Q', 'R', 'R', 'S', 'S', 'T', 'T'],
+            60: ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D', 'E', 'E', 'F', 'F', 'G', 'G', 'H', 'H', 'I', 'I', 'J', 'J',
+                 'K', 'K', 'L', 'L', 'M', 'M', 'N', 'N', 'O', 'O', 'P', 'P', 'Q', 'Q', 'R', 'R', 'S', 'S', 'T', 'T',
+                 'U', 'U', 'V', 'V', 'W', 'W', 'X', 'X', 'Y', 'Y', 'Z', 'Z']
+        };
+        let flippedCards = [];
+        let matchedCards = [];
+        let canFlip = true;
+
+        function createGameBoard() {
+            const difficulty = parseInt(document.getElementById('difficulty').value);
+            const cards = levels[difficulty];
+            shuffle(cards); // Shuffle the cards array
+            const gameBoard = document.getElementById('gameBoard');
+            gameBoard.innerHTML = '';
+            cards.forEach((card, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.classList.add('card');
+                cardElement.dataset.index = index;
+                cardElement.textContent = '?';
+                cardElement.addEventListener('click', () => flipCard(index));
+                gameBoard.appendChild(cardElement);
+            });
+        }
+
+        function flipCard(index) {
+            if (!canFlip || flippedCards.includes(index) || matchedCards.includes(index)) return;
+
+            const cardElement = document.querySelector(`.card[data-index="${index}"]`);
+            const card = cardElement.textContent;
+
+            flippedCards.push(index);
+            cardElement.textContent = levels[parseInt(document.getElementById('difficulty').value)][index];
+
+            if (flippedCards.length === 2) {
+                canFlip = false;
+                setTimeout(checkMatch, 1000);
+            }
+        }
+
+        function checkMatch() {
+            const [index1, index2] = flippedCards;
+            const card1 = levels[parseInt(document.getElementById('difficulty').value)][index1];
+            const card2 = levels[parseInt(document.getElementById('difficulty').value)][index2];
+
+            if (card1 === card2) {
+                matchedCards.push(index1, index2);
+                if (matchedCards.length === levels[parseInt(document.getElementById('difficulty').value)].length) {
+                    document.getElementById('message').textContent = 'Congratulations! You win!';
+                }
+            } else {
+                const cardElement1 = document.querySelector(`.card[data-index="${index1}"]`);
+                const cardElement2 = document.querySelector(`.card[data-index="${index2}"]`);
+                cardElement1.textContent = '?';
+                cardElement2.textContent = '?';
+            }
+
+            flippedCards = [];
+            canFlip = true;
+        }
+
+        function resetGame() {
+            flippedCards = [];
+            matchedCards = [];
+            canFlip = true;
+            document.getElementById('message').textContent = '';
+            createGameBoard();
+        }
+
+        // Function to shuffle an array
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        createGameBoard();
+    </script>
+</body>
+</html>
