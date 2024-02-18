@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #6495ED; /* Синий цвет фона */
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 2px;
+            background-color: #d3d3d3;
+        }
+        .cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            cursor: pointer;
+            background-color: #fff;
+        }
+        .cell:hover {
+            background-color: #e0e0e0;
+        }
+
+        .difficulty-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .difficulty-buttons button {
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="board" onclick="cellClicked(event)">
+        <div class="cell" data-index="0"></div>
+        <div class="cell" data-index="1"></div>
+        <div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div>
+        <div class="cell" data-index="4"></div>
+        <div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div>
+        <div class="cell" data-index="7"></div>
+        <div class="cell" data-index="8"></div>
+    </div>
+
+    <div class="difficulty-buttons">
+        <button onclick="setDifficulty('easy')">Легкий</button>
+        <button onclick="setDifficulty('medium')">Средний</button>
+        <button onclick="setDifficulty('hard')">Сложный</button>
+    </div>
+
+    <script>
+        const cells = document.querySelectorAll('.cell');
+        let winner = null;
+        let computerPlayer = true; // Поменяйте на false, если не хотите, чтобы компьютер играл
+        let difficultyLevel = 'medium'; // Уровень сложности: easy, medium, hard
+
+        function checkWinner() {
+            const winningConditions = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6]
+            ];
+
+            for (let condition of winningConditions) {
+                const [a, b, c] = condition;
+                if (cells[a].innerText && cells[a].innerText === cells[b].innerText && cells[a].innerText === cells[c].innerText) {
+                    winner = cells[a].innerText;
+                    cells[a].style.backgroundColor = cells[b].style.backgroundColor = cells[c].style.backgroundColor = '#90ee90';
+                }
+            }
+        }
+
+        function cellClicked(event) {
+            if (winner) return;
+            const cell = event.target;
+            if (!cell.dataset.index || cell.innerText) return;
+            cell.innerText = 'X';
+            checkWinner();
+            if (computerPlayer && !winner) {
+                setTimeout(computerMove, 500);
+            }
+        }
+
+        function computerMove() {
+            const emptyCells = [...cells].filter(cell => !cell.innerText);
+            if (emptyCells.length > 0) {
+                let index;
+                switch (difficultyLevel) {
+                    case 'easy':
+                        index = Math.floor(Math.random() * emptyCells.length);
+                        break;
+                    case 'medium':
+                        index = findMediumMove(emptyCells);
+                        break;
+                    case 'hard':
+                        index = findHardMove(emptyCells);
+                        break;
+                    default:
+                        index = Math.floor(Math.random() * emptyCells.length);
+                }
+                emptyCells[index].innerText = 'O';
+                checkWinner();
+            }
+        }
+
+        function findMediumMove(emptyCells) {
+            // В среднем уровне сложности компьютер будет стараться блокировать ходы игрока и находить выигрышные ходы для себя
+            const winningMoves = [
+                // Горизонтальные ряды
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                // Вертикальные ряды
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                // Диагонали
+                [0, 4, 8],
+                [2, 4, 6]
+            ];
+
+            for (let move of winningMoves) {
+                const [a, b, c] = move;
+                const playerCells = emptyCells.filter(cell => cell.innerText === 'X');
+                if (playerCells.some(cell => cell.dataset.index == a && playerCells.some(cell => cell.dataset.index == b) && emptyCells.some(cell => cell.dataset.index == c)))
+                    return c;
+                if (playerCells.some(cell => cell.dataset.index == a && playerCells.some(cell => cell.dataset.index == c) && emptyCells.some(cell => cell.dataset.index == b)))
+                    return b;
+                if (playerCells.some(cell => cell.dataset.index == b && playerCells.some(cell => cell.dataset.index == c) && emptyCells.some(cell => cell.dataset.index == a)))
+                    return a;
+            }
+
+            const randomIndex = Math.floor(Math.random() * emptyCells.length);
+            return randomIndex;
+        }
+
+        function findHardMove(emptyCells) {
+            // На самом сложном уровне компьютер будет просчитывать лучшие ходы с помощью минимакс алгоритма
+            // Это более сложный алгоритм, и его реализация здесь будет слишком длинной для примера HTML кода
+            // Вместо этого, я оставлю эту функцию пустой, чтобы вы могли реализовать этот алгоритм самостоятельно
+            // и использовать его для поиска оптимальных ходов компьютера на этом уровне сложности
+            // Здесь вы можете найти реализацию алгоритма минимакса: https://en.wikipedia.org/wiki/Minimax
+            // и адаптировать его для нашей игры
+            // При желании вы можете обратиться ко мне за помощью с этой реализацией
+            return Math.floor(Math.random() * emptyCells.length);
+        }
+
+        function setDifficulty(level) {
+            difficultyLevel = level;
+            if (computerPlayer && !winner && xTurn) {
+                setTimeout(computerMove, 500);
+            }
+        }
+    </script>
+</body>
+</html>

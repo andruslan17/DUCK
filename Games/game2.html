@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #result {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        #choices img {
+            width: 100px;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Rock Paper Scissors</h1>
+    <div id="result"></div>
+    <div id="choices">
+        <img src="rock.png" alt="Rock" id="rock">
+        <img src="paper.png" alt="Paper" id="paper">
+        <img src="scissors.png" alt="Scissors" id="scissors">
+    </div>
+
+    <script>
+        const result = document.getElementById('result');
+        const choices = document.getElementById('choices');
+        const images = choices.querySelectorAll('img');
+
+        images.forEach(img => {
+            img.addEventListener('click', function() {
+                const playerChoice = this.alt;
+                const computerChoice = ['Rock', 'Paper', 'Scissors'][Math.floor(Math.random() * 3)];
+                const winner = determineWinner(playerChoice, computerChoice);
+                result.textContent = `You chose ${playerChoice}. Computer chose ${computerChoice}. ${winner}`;
+            });
+        });
+
+        function determineWinner(playerChoice, computerChoice) {
+            if (playerChoice === computerChoice) {
+                return "It's a tie!";
+            } else if ((playerChoice === 'Rock' && computerChoice === 'Scissors') ||
+                       (playerChoice === 'Paper' && computerChoice === 'Rock') ||
+                       (playerChoice === 'Scissors' && computerChoice === 'Paper')) {
+                return 'You win!';
+            } else {
+                return 'Computer wins!';
+            }
+        }
+    </script>
+</body>
+</html>
