@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сапер</title>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+    .game-container {
+        text-align: center;
+    }
+    .board {
+        display: grid;
+        grid-template-columns: repeat(10, 30px);
+        margin-bottom: 20px;
+    }
+    .cell {
+        width: 30px;
+        height: 30px;
+        border: 1px solid #ccc;
+        text-align: center;
+        line-height: 30px;
+        cursor: pointer;
+    }
+    select {
+        margin-bottom: 10px;
+    }
+</style>
+</head>
+<body>
+<div class="game-container">
+    <h1>Игра Сапер</h1>
+    <select onchange="changeLanguage(this.value)">
+        <option value="en">English</option>
+        <option value="ru">Русский</option>
+        <option value="ar">العربية</option>
+        <option value="hi">हिन्दी</option>
+        <option value="zh">中文</option>
+    </select>
+    <div class="board"></div>
+    <button onclick="restartGame()">Начать сначала!</button>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    initializeBoard();
+});
+
+function changeLanguage(lang) {
+    document.documentElement.lang = lang;
+    if (lang === 'ar') {
+        document.querySelector('h1').textContent = 'لعبة الساحر';
+        document.querySelector('button').textContent = 'ابدأ مرة أخرى!';
+    } else if (lang === 'hi') {
+        document.querySelector('h1').textContent = 'माइन्सवीपर खेलें';
+        document.querySelector('button').textContent = 'फिर से शुरू करें!';
+    } else if (lang === 'zh') {
+        document.querySelector('h1').textContent = '扫雷游戏';
+        document.querySelector('button').textContent = '重新开始！';
+    } else if (lang === 'ru') {
+        document.querySelector('h1').textContent = 'Игра Сапер';
+        document.querySelector('button').textContent = 'Начать сначала!';
+    } else {
+        document.querySelector('h1').textContent = 'Minesweeper Game';
+        document.querySelector('button').textContent = 'Restart Game!';
+    }
+}
+
+function initializeBoard() {
+    const board = document.querySelector('.board');
+    const cells = [];
+    const size = 10;
+    const bombCount = 20;
+    let bombs = [];
+    let revealedCount = 0;
+
+    function placeBombs() {
+        while (bombs.length < bombCount) {
+            const row = Math.floor(Math.random() * size);
+            const col = Math.floor(Math.random() * size);
+            const isBomb = bombs.some(bomb => bomb.row === row && bomb.col === col);
+            if (!isBomb) {
+                bombs.push({ row, col });
+            }
+        }
+    }
+
+    function cellClick(event) {
+        const cell = event.target;
+        if (cell.dataset.state === 'hidden') {
+            const row = parseInt(cell.dataset.row);
+            const col = parseInt(cell.dataset.col);
+            if (bombs.some(bomb => bomb.row === row && bomb.col === col)) {
+                gameOver();
+            } else {
+                revealCell(row, col);
+            }
+        }
+    }
+
+    function revealCell(row, col) {
+        const cell = cells.find(cell => parseInt(cell.dataset.row) === row && parseInt(cell.dataset.col) === col);
+        if (!cell || cell.dataset.state === 'revealed') return;
+
+        const bombCount = countAdjacentBombs(row, col);
+        cell.textContent = bombCount > 0 ? bombCount : '';
+        cell.dataset.state = 'revealed';
+        revealedCount++;
+
+        if (bombCount === 0) {
+            const neighbors = getNeighborCells(row, col);
+            neighbors.forEach(neighbor => revealCell(neighbor.row, neighbor.col));
+        }
+
+        if (revealedCount === size * size - bombCount) {
+            gameWon();
+        }
+    }
+
+    function countAdjacentBombs(row, col) {
+        let count = 0;
+        const neighbors = getNeighborCells(row, col);
+        neighbors.forEach(neighbor => {
+            if (bombs.some(bomb => bomb.row === neighbor.row && bomb.col === neighbor.col)) {
+                count++;
+            }
+        });
+        return count;
+    }
+
+    function getNeighborCells(row, col) {
+        const neighbors = [];
+        for (let i = row - 1; i <= row + 1; i++) {
+            for (let j = col - 1; j <= col + 1; j++) {
+                if (i >= 0 && i < size && j >= 0 && j < size && !(i === row && j === col)) {
+                    neighbors.push({ row: i, col: j });
+                }
+            }
+        }
+        return neighbors;
+    }
+
+    function gameOver() {
+        alert('Вы проиграли!');
+        revealAllBombs();
+    }
+
+    function gameWon() {
+        alert('Поздравляем! Вы выиграли!');
+        revealAllBombs();
+    }
+
+    function revealAllBombs() {
+        bombs.forEach(bomb => {
+            const cell = cells.find(cell => parseInt(cell.dataset.row) === bomb.row && parseInt(cell.dataset.col) === bomb.col);
+            cell.textContent = '💣';
+        });
+    }
+
+    function createBoard() {
+        for (let i = 0; i < size; i++) {
+            for (let j = 0; j < size; j++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.dataset.row = i;
+                cell.dataset.col = j;
+                cell.dataset.state = 'hidden';
+                cell.addEventListener('click', cellClick);
+                board.appendChild(cell);
+                cells.push(cell);
+            }
+        }
+        placeBombs();
+    }
+
+    createBoard();
+}
+
+function restartGame() {
+    location.reload();
+}
+</script>
+</body>
+</html>
