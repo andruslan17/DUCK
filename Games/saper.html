@@ -106,7 +106,7 @@ function initializeBoard() {
 
     function revealCell(row, col) {
         const cell = cells.find(cell => parseInt(cell.dataset.row) === row && parseInt(cell.dataset.col) === col);
-        if (!cell || cell.dataset.state === 'revealed') return;
+        if (!cell || cell.dataset.state !== 'hidden') return;
 
         const bombCount = countAdjacentBombs(row, col);
         cell.textContent = bombCount > 0 ? bombCount : '';
@@ -115,10 +115,12 @@ function initializeBoard() {
 
         if (bombCount === 0) {
             const neighbors = getNeighborCells(row, col);
-            neighbors.forEach(neighbor => revealCell(neighbor.row, neighbor.col));
+            neighbors.forEach(neighbor => {
+                revealCell(neighbor.row, neighbor.col);
+            });
         }
 
-        if (revealedCount === size * size - bombCount) {
+        if (revealedCount === size * size - bombs.length) {
             gameWon();
         }
     }
