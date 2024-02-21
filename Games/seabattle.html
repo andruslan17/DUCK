@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Морской бой</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  .board {
+    display: inline-block;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  .board td {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #000;
+    text-align: center;
+    font-size: 24px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+  <h1>Морской бой</h1>
+  <p>Выберите уровень сложности:</p>
+  <select id="difficulty">
+    <option value="5">Легкий</option>
+    <option value="7">Средний</option>
+    <option value="10">Сложный</option>
+  </select>
+  <button onclick="startGame()">Начать игру</button>
+  <p>Ваш ход!</p>
+  <table class="board" id="playerBoard"></table>
+  <table class="board" id="enemyBoard"></table>
+
+  <script>
+    let boardSize = 5;
+    const playerBoard = document.getElementById('playerBoard');
+    const enemyBoard = document.getElementById('enemyBoard');
+    const playerCells = [];
+    const enemyCells = [];
+    let playerShips;
+    let enemyShips;
+
+    function startGame() {
+      boardSize = parseInt(document.getElementById('difficulty').value);
+      playerShips = boardSize;
+      enemyShips = boardSize;
+      createBoards();
+      placeShips();
+    }
+
+    function createBoards() {
+      playerBoard.innerHTML = '';
+      enemyBoard.innerHTML = '';
+      playerCells.length = 0;
+      enemyCells.length = 0;
+
+      for (let i = 0; i < boardSize; i++) {
+        const playerRow = playerBoard.insertRow();
+        const enemyRow = enemyBoard.insertRow();
+        const playerRowCells = [];
+        const enemyRowCells = [];
+        for (let j = 0; j < boardSize; j++) {
+          const playerCell = playerRow.insertCell();
+          const enemyCell = enemyRow.insertCell();
+          playerCell.addEventListener('click', () => playerAttack(i, j));
+          playerRowCells.push(playerCell);
+          enemyRowCells.push(enemyCell);
+        }
+        playerCells.push(playerRowCells);
+        enemyCells.push(enemyRowCells);
+      }
+    }
+
+    function placeShips() {
+      for (let i = 0; i < boardSize; i++) {
+        const x = Math.floor(Math.random() * boardSize);
+        const y = Math.floor(Math.random() * boardSize);
+        if (!playerCells[x][y].classList.contains('ship')) {
+          playerCells[x][y].classList.add('ship');
+        } else {
+          i--;
+        }
+        const x2 = Math.floor(Math.random() * boardSize);
+        const y2 = Math.floor(Math.random() * boardSize);
+        if (!enemyCells[x2][y2].classList.contains('ship')) {
+          enemyCells[x2][y2].classList.add('ship');
+        } else {
+          i--;
+        }
+      }
+    }
+
+    function playerAttack(x, y) {
+      if (enemyCells[x][y].classList.contains('ship')) {
+        enemyCells[x][y].style.backgroundColor = 'red';
+        enemyCells[x][y].classList.remove('ship');
+        enemyShips--;
+        if (enemyShips === 0) {
+          endGame('Поздравляем! Вы победили!');
+        }
+      } else {
+        enemyCells[x][y].style.backgroundColor = 'gray';
+      }
+      enemyTurn();
+    }
+
+    function enemyTurn() {
+      const x = Math.floor(Math.random() * boardSize);
+      const y = Math.floor(Math.random() * boardSize);
+      if (playerCells[x][y].classList.contains('ship')) {
+        playerCells[x][y].style.backgroundColor = 'red';
+        playerCells[x][y].classList.remove('ship');
+        playerShips--;
+        if (playerShips === 0) {
+          endGame('К сожалению, вы проиграли.');
+        }
+      } else {
+        playerCells[x][y].style.backgroundColor = 'gray';
+      }
+    }
+
+    function endGame(message) {
+      alert(message);
+      for (let i = 0; i < boardSize; i++) {
+        for (let j = 0; j < boardSize; j++) {
+          playerCells[i][j].removeEventListener('click', () => playerAttack(i, j));
+        }
+      }
+    }
+  </script>
+</body>
+</html>
