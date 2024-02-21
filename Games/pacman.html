@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pacman</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+            margin: auto;
+            background-color: #000;
+        }
+        #restartButton {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            font-size: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #restartButton:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <div id="scoreDisplay" style="color: white; font-size: 24px; position: absolute; top: 20px; left: 20px;"></div>
+    <button id="restartButton" onclick="restartGame()">Начать сначала</button>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let pacman = {
+            x: 50,
+            y: 50,
+            radius: 20,
+            mouthOpen: 0,
+            mouthDirection: 1,
+            speed: 5,
+            score: 0,
+            level: 1
+        };
+
+        let dots = generateDots(50); // Генерируем 50 точек
+
+        let ghosts = [
+            { x: 600, y: 100, radius: 15, speed: 2 },
+            { x: 100, y: 400, radius: 15, speed: 3 }
+        ];
+
+        function generateDots(count) {
+            let generatedDots = [];
+            for (let i = 0; i < count; i++) {
+                generatedDots.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: 5,
+                    eaten: false
+                });
+            }
+            return generatedDots;
+        }
+
+        function drawPacman() {
+            ctx.beginPath();
+            ctx.fillStyle = 'yellow';
+            ctx.arc(pacman.x, pacman.y, pacman.radius, pacman.mouthOpen * Math.PI, (2 - pacman.mouthOpen) * Math.PI);
+            ctx.lineTo(pacman.x, pacman.y);
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function drawDot(dot) {
+            if (!dot.eaten) {
+                ctx.beginPath();
+                ctx.fillStyle = 'white';
+                ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.closePath();
+            }
+        }
+
+        function drawGhost(ghost) {
+            ctx.beginPath();
+            ctx.fillStyle = 'red';
+            ctx.arc(ghost.x, ghost.y, ghost.radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function eatDot(dot) {
+            if (!dot.eaten && Math.sqrt((dot.x - pacman.x) ** 2 + (dot.y - pacman.y) ** 2) < pacman.radius) {
+                dot.eaten = true;
+                pacman.score += 10;
+                if (dots.every(dot => dot.eaten)) {
+                    nextLevel();
+                }
+            }
+        }
+
+        function checkCollision(ghost) {
+            return Math.sqrt((ghost.x - pacman.x) ** 2 + (ghost.y - pacman.y) ** 2) < pacman.radius + ghost.radius;
+        }
+
+        function update() {
+            pacman.mouthOpen += 0.05 * pacman.mouthDirection;
+            if (pacman.mouthOpen > 0.5 || pacman.mouthOpen < 0) {
+                pacman.mouthDirection *= -1;
+            }
+
+            if (keys.ArrowUp) {
+                if (pacman.y <= 0) {
+                    pacman.y = canvas.height;
+                } else {
+                    pacman.y -= pacman.speed;
+                }
+            }
+            if (keys.ArrowDown) {
+                if (pacman.y >= canvas.height) {
+                    pacman.y = 0;
+                } else {
+                    pacman.y += pacman.speed;
+                }
+            }
+            if (keys.ArrowLeft) {
+                if (pacman.x <= 0) {
+                    pacman.x = canvas.width;
+                } else {
+                    pacman.x -= pacman.speed;
+                }
+            }
+            if (keys.ArrowRight) {
+                if (pacman.x >= canvas.width) {
+                    pacman.x = 0;
+                } else {
+                    pacman.x += pacman.speed;
+                }
+            }
+
+            dots.forEach(dot => eatDot(dot));
+
+            ghosts.forEach(ghost => {
+                if (checkCollision(ghost)) {
+                    // Game over
+                    canvas.style.display = 'none';
+                    restartButton.style.display = 'block';
+                }
+
+                let dx = pacman.x - ghost.x;
+                let dy = pacman.y - ghost.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                let nx = dx / distance;
+                let ny = dy / distance;
+                ghost.x += nx * ghost.speed;
+                ghost.y += ny * ghost.speed;
+            });
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPacman();
+            dots.forEach(dot => drawDot(dot));
+            ghosts.forEach(ghost => drawGhost(ghost));
+
+            document.getElementById('scoreDisplay').innerText = `Score: ${pacman.score} | Level: ${pacman.level}`;
+
+            requestAnimationFrame(update);
+        }
+
+        const keys = {};
+        window.addEventListener("keydown", function (e) {
+            keys[e.key] = true;
+        });
+        window.addEventListener("keyup", function (e) {
+            keys[e.key] = false;
+        });
+
+        function nextLevel() {
+            pacman.level++;
+            pacman.score += 100;
+            dots = generateDots(50 + pacman.level * 10); // Увеличиваем количество точек на каждом уровне
+        }
+
+        function restartGame() {
+            canvas.style.display = 'block';
+            restartButton.style.display = 'none';
+            pacman = {
+                x: 50,
+                y: 50,
+                radius: 20,
+                mouthOpen: 0,
+                mouthDirection: 1,
+                speed: 5,
+                score: 0,
+                level: 1
+            };
+            dots = generateDots(50); // Возвращаем начальное количество точек
+            update();
+        }
+
+        update();
+    </script>
+</body>
+</html>
