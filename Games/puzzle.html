@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Puzzle Game</title>
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+  }
+  #puzzle-container {
+    position: relative;
+    border: 2px solid #000;
+    overflow: hidden;
+    width: 400px;
+    height: 400px;
+  }
+  .puzzle-piece {
+    position: absolute;
+    border: 2px solid #fff;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+  }
+  #controls {
+    margin-top: 20px;
+  }
+  button {
+    margin: 0 5px;
+  }
+</style>
+</head>
+<body>
+
+<div id="puzzle-container"></div>
+<div id="controls">
+  <input type="file" id="imageLoader" accept="image/*">
+  <label for="pieceNumber">Количество частей:</label>
+  <select id="pieceNumber">
+    <option value="9">9</option>
+    <option value="16">16</option>
+    <option value="25">25</option>
+    <option value="36">36</option>
+    <option value="81">81</option>
+  </select>
+  <button id="shuffleBtn">Перемешать</button>
+</div>
+
+<script>
+  const puzzleContainer = document.getElementById('puzzle-container');
+  const imageLoader = document.getElementById('imageLoader');
+  const shuffleBtn = document.getElementById('shuffleBtn');
+  const pieceNumberSelect = document.getElementById('pieceNumber');
+
+  let imageWidth, imageHeight, pieceWidth, pieceHeight;
+
+  function initPuzzle(image) {
+    const piecesNumber = parseInt(pieceNumberSelect.value);
+    const rowsCols = Math.sqrt(piecesNumber);
+
+    imageWidth = 400; // Изменяем ширину изображения на размер контейнера
+    imageHeight = 400; // Изменяем высоту изображения на размер контейнера
+    pieceWidth = imageWidth / rowsCols; // Делим картинку на квадраты
+    pieceHeight = imageHeight / rowsCols; 
+
+    for (let i = 0; i < piecesNumber; i++) {
+      const piece = document.createElement('div');
+      piece.classList.add('puzzle-piece');
+      piece.id = `piece-${i}`; // Присваиваем каждому куску пазла уникальный id
+      piece.style.width = pieceWidth + 'px';
+      piece.style.height = pieceHeight + 'px';
+      piece.style.backgroundImage = `url(${image.src})`;
+      piece.style.backgroundSize = `${imageWidth}px ${imageHeight}px`; // Устанавливаем размер фонового изображения
+      piece.style.backgroundPosition = `-${pieceWidth * (i % rowsCols)}px -${pieceHeight * Math.floor(i / rowsCols)}px`;
+      piece.style.left = `${pieceWidth * (i % rowsCols)}px`;
+      piece.style.top = `${pieceHeight * Math.floor(i / rowsCols)}px`;
+      piece.setAttribute('draggable', true);
+
+      piece.addEventListener('dragstart', dragStart);
+      piece.addEventListener('dragover', dragOver);
+      piece.addEventListener('drop', drop);
+
+      puzzleContainer.appendChild(piece);
+    }
+  }
+
+  function dragStart(event) {
+    event.dataTransfer.setData('text', event.target.id);
+  }
+
+  function dragOver(event) {
+    event.preventDefault();
+  }
+
+  function drop(event) {
+    event.preventDefault();
+    const data = event.dataTransfer.getData('text');
+    const draggedElement = document.getElementById(data);
+    const droppedElement = event.target;
+
+    const tempLeft = draggedElement.style.left;
+    const tempTop = draggedElement.style.top;
+    draggedElement.style.left = droppedElement.style.left;
+    draggedElement.style.top = droppedElement.style.top;
+    droppedElement.style.left = tempLeft;
+    droppedElement.style.top = tempTop;
+  }
+
+  function shufflePieces() {
+    const pieces = document.querySelectorAll('.puzzle-piece');
+    const shuffledPieces = Array.from(pieces).sort(() => Math.random() - 0.5);
+    const rowsCols = Math.sqrt(shuffledPieces.length);
+    shuffledPieces.forEach((piece, index) => {
+      const col = index % rowsCols;
+      const row = Math.floor(index / rowsCols);
+      const randomPositionX = col * pieceWidth;
+      const randomPositionY = row * pieceHeight;
+      piece.style.left = `${randomPositionX}px`;
+      piece.style.top = `${randomPositionY}px`;
+    });
+  }
+
+  imageLoader.addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+      const image = new Image();
+      image.onload = function() {
+        puzzleContainer.innerHTML = ''; // Очищаем предыдущие пазлы
+        initPuzzle(image);
+      };
+      image.src = event.target.result;
+    };
+
+    reader.readAsDataURL(file);
+  });
+
+  pieceNumberSelect.addEventListener('change', function() {
+    if (imageLoader.files[0]) {
+      const file = imageLoader.files[0];
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const image = new Image();
+        image.onload = function() {
+          puzzleContainer.innerHTML = ''; // Очищаем предыдущие пазлы
+          initPuzzle(image);
+        };
+        image.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  shuffleBtn.addEventListener('click', shufflePieces);
+</script>
+
+</body>
+</html>
