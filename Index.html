@@ -11,7 +11,6 @@
             padding: 0;
             background-image: linear-gradient(to right, #1e5799, #7db9e8);
             color: #333;
-            overflow-x: hidden; /* Добавленный стиль для скрытия горизонтальной полосы прокрутки */
         }
         header {
             background-color: rgba(0, 0, 0, 0.7);
@@ -74,6 +73,11 @@
         footer p {
             margin: 0;
             font-size: 16px;
+        }
+
+        /* Добавленный стиль для убирания горизонтальной полосы прокрутки на мобильных устройствах */
+        html {
+            overflow-x: hidden;
         }
     </style>
 </head>
