@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DUCK Token</title> <!-- Убрали символ 🦆 -->
+    <title>DUCK Token</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -25,7 +25,7 @@
             margin: 0;
             font-size: 36px;
             font-weight: bold;
-            display: inline; /* Добавили, чтобы заголовок находился в одной строке с изображением */
+            display: inline;
         }
         nav ul {
             list-style-type: none;
@@ -48,8 +48,8 @@
         section {
             padding: 150px 0;
             text-align: center;
-            max-width: 100%; /* Добавили максимальную ширину для контейнера раздела */
-            overflow-x: hidden; /* Добавили скрытие горизонтального переполнения */
+            max-width: 100%;
+            overflow-x: hidden;
         }
         section h2 {
             font-size: 32px;
@@ -76,8 +76,13 @@
             margin: 0;
             font-size: 16px;
         }
-
-        /* Добавленный стиль для убирания горизонтальной полосы прокрутки на мобильных устройствах */
+        /* Added style to center contract addresses on mobile devices */
+        @media (max-width: 600px) {
+            section p.contract-address {
+                text-align: center;
+            }
+        }
+        /* Added style to remove horizontal scroll on mobile devices */
         html {
             overflow-x: hidden;
         }
@@ -86,9 +91,9 @@
 <body>
     <header>
         <div class="container">
-            <img src="duck.jpg" alt="Duck Image" style="height: 30px;"> <!-- Добавили изображение утки перед заголовком -->
-            <h1>DUCK Token</h1> <!-- Убрали символ 🦆 -->
-            <img src="duck.jpg" alt="Duck Image" style="height: 30px;"> <!-- Добавили изображение утки после заголовка -->
+            <img src="duck.jpg" alt="Duck Image" style="height: 30px;">
+            <h1>DUCK Token</h1>
+            <img src="duck.jpg" alt="Duck Image" style="height: 30px;">
             <nav>
                 <ul>
                     <li><a href="#about">About</a></li>
@@ -115,7 +120,7 @@
             <h2>Staking</h2>
             <p>Stake your DUCK Tokens and earn rewards! Our staking platform offers lucrative opportunities for investors. Our staking is open, the contract address is verified and public, anyone can read the contract and ensure that there are no hidden pitfalls, so staking is done directly through the contract to be as transparent as possible for our users!</p>
             <li><a href="https://explorer.fuse.io/address/0x6A498c16cf4E0b4359511e4F87d9046d13B75c51?tab=write_contract#ebedb8b3">DUCK staking (Fuse network)</a></li>
-            <p>Contract Address: 0x694E31fB6cf8E86Bb09e67D58b82B5abc6C2065E</p>
+            <p class="contract-address">Contract Address: 0x694E31fB6cf8E86Bb09e67D58b82B5abc6C2065E</p>
         </div>
     </section>
 
