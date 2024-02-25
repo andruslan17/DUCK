@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset= "utf-8">
+    <meta name= "description" content="DX Ball Game">
+    <title>DX Ball Game</title>
+    <link rel="stylesheet" href="css/Welcom.css">
+    <link rel="stylesheet" href="css/levelsScene.css">
+    <link rel="stylesheet" type="text/css" href="css/settings.css">
+    <style>
+        #gameScreen {
+            border: 1px solid black;
+            display: none;
+        }
+        
+        #ballImg,
+        #brick,
+        #paddle,
+        #setting,
+        #levels,
+        #backgroundOne {
+            display: none;
+        }
+        
+        #back {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            font-size: 30px;
+            color: #006680;
+            z-index: 999;
+        }
+    </style>
+  </head>
+  <body>
+    <img id="backgroundOne" src="img/1.jpg">
+    <img id="ballImg" src="img/ball.png">
+    <img id="brick" src="img/brick.png">
+    <img id="paddle" src="img/paddle.png">
+    <canvas id="gameScreen"></canvas>
+
+    <script src="js/collitionDetection.js"></script>
+    <script src="js/background.js"></script>
+    <script src="js/paddle.js"></script>
+    <script src="js/ball.js"></script>
+    <script src="js/brick.js"></script>
+    <script src="js/levels.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/inputHandler.js"></script>
+    <script src="js/index.js"></script>
+ 
+    <!--back button-->
+    <div onclick="back()" id="back">
+      <img src="Menu/back.png" width="80 px" height="80px">
+    </div>
+
+    <section id="menu">
+        <!--exit button-->
+        <div id="exit" onclick="closeMe()"> 
+           <img src="Menu/exit.png" alt="exit button" width="80px" height="80px">
+        </div>
+
+        <!--iti logo-->
+        <div id="iti_png">
+           <img src="Menu/iti_png.png" alt="exit button" width="150px" height="100px">
+        </div>
+
+        <!--buttons containers-->
+        <div id="button_container">
+           <img src="Menu/buttoncontainer.png" alt="button Container" width="400px" height="280px">
+        </div>
+        <div id="button_container1">
+           <img src="Menu/buttoncontainer.png" alt="button Container" width="400px" height="280px">
+        </div>
+        <div id="button_container2">
+           <img src="Menu/buttoncontainer.png" alt="button Container" width="400px" height="280px">
+        </div>
+        <div id="button_container3">
+           <img src="Menu/buttoncontainer.png" alt="button Container" width="400px" height="280px">
+        </div>
+
+        <!--game buttons-->
+        <div id="play_button" onclick="start()">
+           <img src="Menu/play.png" alt="play" width="80px" height="80px"> 
+        </div>
+        <div id="levelselection_button" onclick="changeScreen('levels')">
+           <img src="Menu/levelselection.png" alt="levelselection" width="90px" height="70px">
+        </div>
+        <div id="options_button" onclick="changeScreen('setting')">
+           <img src="Menu/options.png" alt="options" width="110px" height="110px">
+        </div>
+        <a id="about_button" href="about/index.html">
+           <img src="Menu/about.png" alt="about" width="110px" height="110px">
+        </a>
+
+        <!--game header-->
+        <div id="game_header">
+           <img src="Menu/header.png" alt="game header" width="320px" height="160px">
+        </div>
+    </section>
+    <audio id="audio" src="sound/sound2.mp3"></audio>
+    <audio id="song" src="sound/song.mp3"></audio>
+    
+
+     <!--Levels Section-->
+    <section id = "levels">
+        <div id="select">
+        </div>
+        <div id="allButtons">
+           <button onclick="levelChoose(1)" id="btn1">1</button>
+           <button onclick="levelChoose(2)" id="btn2">2</button>
+           <button onclick="levelChoose(3)" id="btn3">3</button>
+           <button onclick="levelChoose(4)" id="btn4">4</button>
+           <button onclick="levelChoose(5)" id="btn5">5</button>
+           <button onclick="levelChoose(6)" id="btn6">6</button>
+           <button onclick="levelChoose(7)" id="btn7">7</button>
+        </div>
+    </section>
+    <script src="js/levelsPage.js"></script>
+
+    <!--Settings handeling-->
+    <section id="setting">
+        <form >
+           <!--Game Sound-->
+           <div class="settingsData">
+              <span>Game Sound</span>
+              <input type="checkbox" id="soundEffect">
+           </div>
+
+           <!--Game Music-->
+           <div class="settingsData">
+             <span>Game Music</span>
+             <input type="checkbox" id="music">
+          </div>
+
+          <!--Ball Speed-->
+          <div class="ball-speed">
+             <span class="ball_speed_span">Ball Speed</span><br>
+             <input type="number" id="speed">
+          </div>
+
+          <!--Image theme Selection-->
+           <div class="image_selection">
+             <span class="image_selection_span">Background Image</span>
+             <div onclick="imgSelect('1.jpg')" id="img/1.jpg" class="imgDiv">
+                 <img src="img/1.jpg">
+             </div>
+             <div onclick="imgSelect('2.jpg')" id="img/2.jpg" class="imgDiv">
+                 <img src="img/2.jpg">
+             </div>
+             <div onclick="imgSelect('3.jpg')" id="img/3.jpg" class="imgDiv">
+                 <img src="img/3.jpg">
+             </div>
+           </div>
+
+           <!--confirm bottom-->
+           <div class="save-changes-div">
+             <button onclick="onConfirm()" class="done-btn">
+                 <span>Save Changes</span>
+             </button>
+         </div>
+        </form>
+    </section>
+  <script src="js/setting.js"></script>
+  <script>
+    function changeScreen(screenId) {
+        var canvas = document.getElementById("gameScreen");
+        canvas.style.display = "NONE";
+        var menu = document.getElementById("menu");
+        menu.style.display = "NONE";
+        var levels = document.getElementById("levels");
+        levels.style.display = "NONE";
+        var settings = document.getElementById("setting");
+        settings.style.display = "NONE";
+
+        var target = document.getElementById(screenId);
+        target.style.display = "block";
+    }
+
+    function start() {
+        game.currentLevel = 0;
+        game.start();
+        playMusic();
+        changeScreen('gameScreen')
+    }
+
+    function back() {
+        game.gameState = GAME_STATE.PAUSED
+        changeScreen("menu")
+    }
+
+    function playMusic() {
+        if (game.musicOn) {
+            var song = document.getElementById("song");
+            song.play();
+        }
+    }
+
+    function closeMe() {
+        alert("do you want to refresh ?")
+        open(location, '_self').close();
+    }
+
+</script>
+  </body>
+</html>
