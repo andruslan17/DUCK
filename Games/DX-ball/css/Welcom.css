@@ -1,0 +1,126 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/*body style*/
+html{
+    width: 100%;
+    height: 100%;
+    background: url('background.jpg') no-repeat center center;
+    background-size: cover;
+}
+
+/*Exit Button style*/
+#exit{
+    width: 80px;
+    height: 80px;
+    margin-left: 1430px;
+    position: relative;
+}
+#exit:hover {
+    cursor: pointer;
+}
+
+/*back Button style*/
+#back:hover{
+    cursor: pointer;
+}
+
+/*iti_png style*/
+#iti_png{
+    width: 150px;
+    height: 100px;
+    margin-top: 500px;
+    margin-left: 1300px;
+    
+}
+
+/*button contaniers*/
+#button_container{
+    width: 400px;
+    height: 280px;
+    margin-top:-565px ;
+    margin-left: 485px;
+    position: absolute;
+}
+#button_container1{
+    width: 400px;
+    height: 280px;
+    margin-top:-354px ;
+    margin-left: 485px;
+    position: absolute;
+}
+#button_container2{
+    width: 400px;
+    height: 280px;
+    margin-top:-354px ;
+    margin-left: 789px;
+    position: absolute;
+}
+#button_container3{
+    width: 400px;
+    height: 280px;
+    margin-top:-562px ;
+    margin-left: 780px;
+    position: absolute;
+}
+/*buttons style*/
+#play_button{
+    width: 80px;
+    height: 80px;
+    margin-top:-508px ;
+    margin-left: 566px;
+    position: absolute;
+}
+
+#play_button:hover {
+    cursor: pointer;
+}
+
+#levelselection_button{
+    width: 90px;
+    height: 70px;
+    margin-top:-505px ;
+    margin-left: 853px;
+    position: absolute;
+}
+
+#levelselection_button:hover {
+    cursor: pointer;
+}
+
+#options_button{
+    width: 110px;
+    height: 110px;
+    margin-top:-300px ;
+    margin-left: 863px;
+    position: absolute;
+}
+
+#options_button:hover {
+    cursor: pointer;
+}
+
+#about_button{
+    width: 110px;
+    height: 110px;
+    margin-top:-302px ;
+    margin-left: 553px;
+    position: absolute;
+}
+
+#about_button:hover {
+    cursor: pointer;
+}
+
+/*game header style*/
+#game_header{
+    width: 320px;
+    height: 160px;
+    margin-top:-680px ;
+    margin-left: 599px;
+    position: absolute;
+}
