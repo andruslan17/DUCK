@@ -86,8 +86,22 @@
         html {
             overflow-x: hidden;
         }
+        /* Added style for SWAP header */
+        #swap h2, #airdrop h2 {
+            display: inline-block;
+            position: relative;
+        }
+
+        /* Added style for SWAP and Airdrop logos */
+        #swap img, #airdrop img {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            margin-left: 5px;
+        }
     </style>
 </head>
+
 <body>
     <header>
         <div class="container">
@@ -109,7 +123,7 @@
     </header>
     <section id="about">
         <div class="container">
-            <h2>About DUCK Token</h2>
+            <h2>About DUCK Token<img src="duck2.png" alt="duck2.png"></h2>
             <p>Dive into the world of DUCK Token, a cryptocurrency like no other. Learn about our mission, vision, and values.</p>
             <a target="_blank"><img src="DUCK2.jpg" style="width: 100%; height: auto;"></a>
         </div>
@@ -126,7 +140,7 @@
 
     <section id="airdrop">
         <div class="container">
-            <h2>Airdrop</h2>
+            <h2>Airdrop<img src="airdrop.png" alt="airdrop.png"></h2>
             <p>Participate in our airdrop program and get free DUCK Tokens! Stay tuned for more details.</p>
             <li><a href="https://polygonscan.com/address/0x95b2e61edc51b7c9a2dbadfc7aabd6f3179c874b#writeContract#F4"><b>CLAIM DUCK Airdrop (Polygon network)</b></a></li>
             <li><a href="https://celoscan.io/address/0xc29A19DEaa19e0b61Ab104A068Ef29fB1094814f#writeContract#F4"><b>CLAIM DUCK Airdrop (Celo network)</b></a></li>
@@ -136,8 +150,8 @@
 
     <section id="swap" class="dark-section">
         <div class="container">
-            <h2>SWAP</h2>
-            <p><b>Fuse:</b></p>
+            <h2>SWAP<img src="SWAP.png" alt="SWAP.png"></h2>
+            <p><b>Fuse:</b></p>    
             <p>Contract Address: 0x694E31fB6cf8E86Bb09e67D58b82B5abc6C2065E</p>
             <li><a href="https://www.sushi.com/swap?chainId=122&token0=NATIVE&token1=0x694E31fB6cf8E86Bb09e67D58b82B5abc6C2065E"><b>Sushiswap: DUCK-FUSE</b></a></li>
             <li><a href="https://voltage.finance/swap"><b>Voltage.finance: DUCK-FUSE</b></a></li>
