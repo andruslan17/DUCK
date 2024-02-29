@@ -55,7 +55,6 @@
             font-size: 32px;
             color: #fff;
             margin-bottom: 30px;
-            display: inline-block; /* Добавлено */
         }
         section p {
             font-size: 18px;
@@ -87,10 +86,34 @@
         html {
             overflow-x: hidden;
         }
+        /* Added style for SWAP header */
+        #swap h2, #airdrop h2 {
+            display: inline-block;
+            position: relative;
+        }
+
+        /* Added style for SWAP and Airdrop logos */
+        #swap img, #airdrop img {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            margin-left: 5px;
+        }
+
+            @media (max-width: 600px) {
+            section p.contract-address {
+                text-align: center;
+            }
+        }
+        /* Added style to remove horizontal scroll on mobile devices */
+        html {
+            overflow-x: hidden;
+        }
         /* Added style for SWAP and Airdrop logos */
         #swap img, #airdrop img {
             height: 30px; /* Задайте нужную высоту для логотипов */
             vertical-align: middle; /* Добавлено */
+
         }
     </style>
 </head>
