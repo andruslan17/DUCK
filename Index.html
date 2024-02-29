@@ -81,9 +81,11 @@
             section p.contract-address {
                 text-align: center;
             }
-            #swap h2 img, #airdrop h2 img {
-                max-height: none;
-                height: auto;
+            #swap img, #airdrop img {
+                position: static; /* Убираем позиционирование */
+                transform: none; /* Сбрасываем transform */
+                margin-left: 0; /* Убираем отступ слева */
+                height: 20px; /* Устанавливаем желаемую высоту для изображений */
             }
         }
         /* Added style to remove horizontal scroll on mobile devices */
