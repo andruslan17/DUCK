@@ -87,33 +87,17 @@
             overflow-x: hidden;
         }
         /* Added style for SWAP header */
-        #swap h2, #airdrop h2 {
+        #swap h2, #airdrop h2, #about h2 {
             display: inline-block;
             position: relative;
         }
 
         /* Added style for SWAP and Airdrop logos */
-        #swap img, #airdrop img {
+        #swap img, #airdrop img, #about img[src="duck3.png"] {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
             margin-left: 5px;
-        }
-
-            @media (max-width: 600px) {
-            section p.contract-address {
-                text-align: center;
-            }
-        }
-        /* Added style to remove horizontal scroll on mobile devices */
-        html {
-            overflow-x: hidden;
-        }
-        /* Added style for SWAP and Airdrop logos */
-        #swap img, #airdrop img {
-            max-height: 40px; /* Задайте максимальную высоту для логотипов */
-            vertical-align: middle;
-
         }
     </style>
 </head>
@@ -139,7 +123,7 @@
     </header>
     <section id="about">
         <div class="container">
-            <h2>About DUCK Token</h2>
+            <h2>About DUCK Token<img src="duck3.png" alt="duck3.png"></h2>
             <p>Dive into the world of DUCK Token, a cryptocurrency like no other. Learn about our mission, vision, and values.</p>
             <a target="_blank"><img src="DUCK2.jpg" style="width: 100%; height: auto;"></a>
         </div>
