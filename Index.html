@@ -98,6 +98,24 @@
             top: 50%;
             transform: translateY(-50%);
             margin-left: 5px;
+
+            /* Added style for marquee */
+        .marquee {
+            overflow: hidden;
+            white-space: nowrap;
+            box-sizing: border-box;
+            animation: marquee 35s linear infinite;
+        }
+
+        .marquee img {
+            display: inline-block;
+            height: 50px; /* Adjust height as needed */
+            margin-right: 20px; /* Adjust margin as needed */
+        }
+
+        @keyframes marquee {
+            0%   { transform: translate(100%, 0); }
+            100% { transform: translate(-100%, 0); }
         }
     </style>
 </head>
@@ -162,6 +180,13 @@
             <p><b>Polygon:</b></p>
             <p>Contract Address: 0x45af6e3C7C5275889ed5Ba95A55c6a0c11339fa4</p>
             <li><a href="https://app.uniswap.org/swap?chain=polygon"><b>Uniswap: DUCK-MATIC</b></a></li>
+
+            <div class="marquee">
+                <a href="https://app.uniswap.org/swap?chain=polygon"><img src="Uniswappolygon.png" alt="Uniswappolygon.png" style="height: 70px;"></a>
+                <a href="https://app.uniswap.org/swap?chain=celo"><img src="Uniswapcelo.png" alt="Uniswapcelo" style="height: 70px;"></a>
+                <a href="https://www.sushi.com/swap?chainId=122&token0=NATIVE&token1=0x694E31fB6cf8E86Bb09e67D58b82B5abc6C2065E"><img src="Sushi.png" alt="Sushi" style="height: 70px;"></a>
+                <a href="https://voltage.finance/swap"><img src="Voltage.png" alt="Voltage" style="height: 70px;"></a>
+            </div>
         </div>
     </section>
 
